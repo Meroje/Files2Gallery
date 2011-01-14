@@ -17,12 +17,16 @@ Lvc_Config::addElementViewPath(APP_PATH . 'views/elements/');
 Lvc_Config::setViewClassName('AppView');
 
 // Include custom ini configuration
-include_once(APP_PATH .'classes/inifile.php');
+include_once(APP_PATH .'classes/IniFile.class.php');
 $globalConfig = new IniFile('global', APP_PATH. 'config/config.ini');
+
+// Include fSQL
+include_once(APP_PATH .'modules/fsql/fSQL.php');
 
 // Lvc doesn't autoload the AppController, so we have to do it: (this also means we can put it anywhere)
 include(APP_PATH . 'classes/AppController.class.php');
 include(APP_PATH . 'classes/AppView.class.php');
+include(APP_PATH . 'classes/AppModel.class.php');
 
 // Load Routes
 include(dirname(__FILE__) . '/routes.php');
