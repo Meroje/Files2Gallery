@@ -23,6 +23,16 @@ class IniFile
    private $files = array();
    
    /**
+    * @var array config objects
+    */
+   private $objects = array();
+   
+   /**
+    * @var array config arrays
+    */
+   private $arrays = array();
+   
+   /**
    *  Constructor
    *
    *  @param string $name (optional) unique identifier to the file
@@ -71,29 +81,34 @@ class IniFile
    *
    *  @return object
    */
-   public function getIniDataObj()
+   public function getIniDataObj($name = 'global')
    {
       if(empty($this->iniFilePath))
       {
          throw new Exception("No ini file path defined");
       }
-      $dataArray = parse_ini_file($this->iniFilePath, TRUE);
-      $dataObj = new stdClass();
-      foreach($dataArray as $key => $value)
+      if (!array_key_exists($name, $this->objects))
       {
-         if(is_array($value))
+         $dataArray = $this->getIniDataArray($name);
+         $dataObj = new stdClass();
+         foreach($dataArray as $key => $value)
          {
-            foreach($value as $key2 => $value2)
+            if(is_array($value))
             {
-               $dataObj->$key->$key2 = $value2;
+               $dataObj->$key = new stdClass();
+               foreach($value as $key2 => $value2)
+               {
+                  $dataObj->$key->$key2 = $value2;
+               }
+            }
+            else
+            {
+               $dataObj->$key = $value;
             }
          }
-         else
-         {
-            $dataObj->$key = $value;
-         }
+         $this->objects[$name] = $dataObj;
       }
-      return($dataObj);
+      return $this->objects[$name];
    }
    
    /**
@@ -103,12 +118,16 @@ class IniFile
    *
    *  @return array
    */
-   public function getIniDataArray()
+   public function getIniDataArray($name = 'global')
    {
       if(empty($this->iniFilePath))
       {
          throw new Exception("No ini file path defined");
       }
-      return(parse_ini_file($this->iniFilePath, TRUE));
+      if (!array_key_exists($name, $this->arrays))
+      {
+         $this->arrays[$name] = parse_ini_file($this->iniFilePath, TRUE);
+      }
+      return $this->arrays[$name];
    }
 }

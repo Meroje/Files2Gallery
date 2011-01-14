@@ -6,7 +6,8 @@ class AppController extends Lvc_PageController
 	
 	protected function beforeAction()
 	{
-		$this->setLayoutVar('pageTitle', 'Untitled');
+	  global $globalConfig;
+		$this->setLayoutVar('pageTitle', $globalConfig->getIniDataObj('global')->site->name);
 		$this->requireCss('reset.css');
 		$this->requireCss('master.css');
 	}
