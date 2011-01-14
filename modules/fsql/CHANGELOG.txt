@@ -1,0 +1,140 @@
+
++++++++++++++++++++++++++++++++++
++
++ Changes since v1.3
++
++++++++++++++++++++++++++++++++++
+
+Improvements:
+	- The "AS" keyword is now optional when specifying alias in the SELECT expressions.  Example:
+		SELECT group g FROM user;
+	   is the same as:
+		SELECT group AS g FROM user;
+      - Specifying an alias for a function call in a SELECT expression is now optional.  If one is not specified,
+	    the column name will be the entire function call as a string.  Example:
+		$results = $fsql->query("SELECT sqrt(colA) FROM mytable");
+		while($row = $fsql->fetch_assoc(results)) {
+			echo $row['sqrt(colA)']."\r\n";
+		}
+		
+Bug fixes:
+	- Fixed areas of query parsing to be more lenient on the amount of whitespace (specifically CREATE TABLLE and SELECT).
+	- Fixed bug that caused calls to the supported "aggregate" or "grouping" functions (count, max, min, sum) to fail.
+	- Fixed parsing bug in the SELECT expression list.
+
++++++++++++++++++++++++++++++++++
++
++ Changes since v1.2
++
++++++++++++++++++++++++++++++++++
+
+Improvements:
+ - Better error detection in define_db() if database path does not exist.
+ - Using NULL on an auto increment column during an INSERT now causes the increment instead of trying to INSERT NULL.
+ - Improved locking system.
+ - Added support for LOCK TABLES and UNLOCK TABLES queries.  Does not support aliases yet.  Ignores "LOCAL" and LOW PRIORITY" modifiers.
+   Trying to modify a READ locked table will cause query() to return null and set the error message.
+
+New SQL Queries:
+ - LOCK TABLES
+ - UNLOCK TABLES
+
+SQL Syntax and Query Changes:
+ - Added support for "CONSTRAINT name PRIMARY KEY (column)" style syntax for keys in CREATE TABLE and ALTER TABLE.
+ - Renamed ALTER TABLE's "ALTER COLUMN" command to "CHANGE COLUMN" to match mySQL.
+ - Added another syntax for renaming tables "ALTER TABLE table1 RENAME [TO] table2".
+ - Added "INDEX" as an alias to "KEY" in constraint definitions.
+
+Bug Fixes:
+ - Fixed many bugs involving reading and writing tables.
+ - Fixed bug in DELETE.
+ - Fixed bug in renaming tables.
+ - Fixed bugs in ALTER TABLE.
+ - Fixed few minor parser bugs.
+ - Fixed INSERT auto increment bug that occurs when the incremented column is not specified in query.
+ - Fixed a table's first auto increment value to be 1 not 0.
+ - Fixed the locking system to prevent the accidental downgrading of write locks to read locks and having to upgrade back again.
+ 
+ 
++++++++++++++++++++++++++++++++++
++
++ Changes since v1.1
++
++++++++++++++++++++++++++++++++++
+ 
+New/Improved features:
+	- Improved API
+		- The old  version's class (Database) has been replaced with fSQLEnvironment
+			- The old Database class's db_connect() has been replaced by
+			  fSQLEnviroment's define_db and select_db methods
+			- The old Database class's db_disconnect() has been replaced by
+			  fSQLEnviroment's close method
+		- New object-oriented backend to allow different backends in future
+		- More functions found in the mySQL API added to fSQLEnviroment:
+			- affected_rows()
+			- close()
+			- data_seek()
+			- insert_id()
+			- select_db()
+	- Ability to define multiple databases
+		- Databases now have names so they can be used in queries
+		- Able to select current database to use as default in queries
+	- A much smaller table output format to reduce the size of tables
+	- Improved table locking to prevent simultaneous writes
+	- Transaction support
+		- Autocommit is on by default but BEGIN or START TRANSACTION
+		  will create a transaction than ends on a COMMIT or ROLLBACK
+		  and returns to autocommit mode.
+	- Partially acknowledges column types
+		- fSQL now supports ENUM types
+		- fSQL knows whether the column is either an int, a float, a string, or an enum
+		- Date/Time types not added yet
+
+New SQL queries:
+	- BEGIN
+	- COMMIT
+	- DROP DATABASE
+	- ROLLBACK
+	- SHOW DATABASES
+	- SHOW TABLES
+	- START TRANSACTION
+	- USE
+
+SQL syntax changes:
+	- Allows the use of backtick quotes (`) around identifiers
+	- Allows a semi-colon to optionally appear at end of a query
+	- Ability to specifiy primary keys and unique indices.
+	- Ability to specify the database's name when using a table.
+		- This allows tables from other defined databases to be used in queries.
+	- Support for negative numbers
+	- Improved support for floating point numbers
+	- New supported SQL operators:
+		- LIKE
+		- NOT LIKE
+		- NOT REGEXP
+		- NOT RLIKE
+		- REGEXP
+		- RLIKE
+	- New supported SQL functions:
+		- DATABASE
+		- INSERT_ID
+		- ROW_COUNT
+		- SHA
+	- Added "CREATE TABLE table_name LIKE other_table" syntax
+	- Added IGNORE option on INSERT queries
+	- Added DISTINCTROW and ALL options to SELECT for mySQL compatibility
+	- Added ALTER COLUMN command for ALTER TABLE
+
+Important bug fixes:
+	- If specified path to database does not exist, fSQL will attempt to create it
+	- Allows use of symbolic links in database paths
+	- Ability to use \' inbetween ' '
+	- Easier implicit conversion between numbers and strings where needed
+	- Fixed temporary tables
+	- Fixed setting columns to NULL
+	- Bug fixes in WHERE clauses
+	- Fixed SQL's LOG functions
+	- Improved reading of CREATE TABLE queries
+	- Fixed many bugs related to old case-sensitivity of keywords
+	- Fixed bugs involving calling SQL functions
+	- Far more leniency in amount of whitespace used in queries
