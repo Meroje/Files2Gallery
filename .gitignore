@@ -1,0 +1,8 @@
+*.class
+*.pyc
+*.pyo
+.project
+.settings
+*~*.class
+*.pyc
+*.pyo
