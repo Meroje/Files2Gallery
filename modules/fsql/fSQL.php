@@ -195,7 +195,7 @@ class fSQLTable
 
 	function &create($path_to_db, $table_name, $columnDefs)
 	{
-		$table =& new fSQLTable;
+		$table = new fSQLTable;
 		$table->columns = $columnDefs;
 		return $table;
 	}
@@ -219,7 +219,7 @@ class fSQLTable
 	function &getCursor()
 	{
 		if($this->cursor == NULL)
-			$this->cursor =& new fSQLTableCursor;
+			$this->cursor = new fSQLTableCursor;
 		
 		$this->cursor->entries =& $this->entries;
 		$this->cursor->num_rows = count($this->entries);
@@ -289,7 +289,7 @@ class fSQLCachedTable
 	
 	function &create($path_to_db, $table_name, $columnDefs)
 	{
-		$table =& new fSQLCachedTable($path_to_db, $table_name);
+		$table = new fSQLCachedTable($path_to_db, $table_name);
 		$table->columns = $columnDefs;
 		
 		list($msec, $sec) = explode(' ', microtime());
@@ -2755,7 +2755,7 @@ class fSQLEnvironment
 		if($row == NULL)
 			return NULL;
 
-		$obj =& new stdClass();
+		$obj = new stdClass();
 
 		foreach($row as $key => $value)
 			$obj->{$key} = $value;

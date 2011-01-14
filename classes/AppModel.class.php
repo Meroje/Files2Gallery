@@ -7,4 +7,5 @@
  */
 class AppModel extends fSQLEnvironment
 {
+  
 }
